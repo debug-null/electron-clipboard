@@ -77,3 +77,21 @@ if (isDevelopment) {
     });
   }
 }
+
+function initialize() {
+  // 保证应用程序是个单例
+  const shouldQuit = !app.requestSingleInstanceLock();
+  if (shouldQuit) return app.quit();
+
+  loadComponent();
+}
+
+/**
+ * 注册主线程文件里的所有js
+ *
+ */
+function loadComponent() {
+  require("./electron/main/index.js");
+}
+
+initialize();

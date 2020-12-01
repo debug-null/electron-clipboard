@@ -2,7 +2,9 @@ const { clipboard, nativeImage } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const { v1: uuidv1 } = require("uuid");
-const config = require("@/config/config.js");
+const config = {
+  configDir: "./data"
+};
 
 //创建目录并写入文件
 const writeFileDir = function(filePath, buffer, callback) {
