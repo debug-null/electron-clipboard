@@ -1,47 +1,76 @@
-// src/renderer/utils/db.js
-// 建表脚本，导出db对象供之后使用
-import path from "path";
-import sq3 from "sqlite3";
-// import { docDir } from './settings';
-// 将数据存至系统用户目录，防止用户误删程序
-export const dbPath = path.join("./data.sqlite1");
-
-// const sqlite3 = sq3.verbose();
-// const db = new sqlite3.Database(dbPath);
-// db.serialize(() => {
-//   db.run("create table test(name varchar(15))", function() {
-//     db.run("insert into test values('hello,word')", function() {
-//       db.all("select * from test", function(err, res) {
-//         if (!err) {
-//           console.log(JSON.stringify(res));
-//         } else {
-//           console.log(err);
-//         }
-//       });
-//     });
-//   });
-// });
-var sqlite3 = require("sqlite3").verbose();
+const path = require("path");
+const fs = require("fs");
+const sq3 = require("sqlite3");
 
 class Db {
-  constructor(options) {
-    console.log(
-      "🚀 ~ file: index.js ~ line 42 ~ Db ~ constructor ~ options",
+  constructor(options = {}) {
+    this.options = Object.assign(
+      {
+        basePath: "./temp_sql" //数据库存放 目录
+      },
       options
     );
+
+    //检查目录是否存在，不存在创建
+    let isSqlDirectory = fs.existsSync(this.options.basePath);
+    if (!isSqlDirectory) {
+      fs.mkdirSync(this.options.basePath);
+    }
+
+    this.init();
   }
-  init() {
-    const db = new sqlite3.Database(dbPath);
-    db.serialize(function() {
-      db.run(`CREATE TABLE "paste_con" (
-        "id"	INTEGER,
-        "type"	TEXT,
-        "content"	TEXT NOT NULL,
-        "source"	TEXT,
-        PRIMARY KEY("id" AUTOINCREMENT)
-      )`);
-    });
+
+  /**
+   *
+   * @param {*} data : sql 创建的表sql, name: 数据库名称
+   */
+  init(data) {
+    if (data && data.sql.length) {
+      const sqlite3 = sq3.verbose();
+      this.db = new sqlite3.Database(
+        this.options.basePath + "/" + data.name + ".sqlite3"
+      );
+      // this.db.serialize(() => {
+      //   this.db.run(sql, function() {});
+      // });
+    }
+
+    // this.db.serialize(function() {
+    //   this.db.run(`CREATE TABLE "paste_con" (
+    //     "id"	INTEGER,
+    //     "type"	TEXT,
+    //     "content"	TEXT NOT NULL,
+    //     "source"	TEXT,
+    //     PRIMARY KEY("id" AUTOINCREMENT)
+    //   )`);
+    // });
+  }
+  insert() {
+    this.db.run("insert into test values('hello,word')", function() {});
   }
 }
 
 export default Db;
+
+// const { app, powerMonitor } = require("electron");
+
+// app.on("ready", () => {
+//   powerMonitor.on("suspend", e => {
+//     console.log("suspend");
+//   });
+//   powerMonitor.on("resume", e => {
+//     console.log("resume");
+//   });
+//   powerMonitor.on("on-battery", e => {
+//     console.log("on-battery");
+//   });
+//   powerMonitor.on("shutdown", e => {
+//     console.log("shutdown");
+//   });
+//   powerMonitor.on("lock-screen", e => {
+//     console.log("lock-screen");
+//   });
+//   powerMonitor.on("unlock-screen", e => {
+//     console.log("unlock-screen");
+//   });
+// });

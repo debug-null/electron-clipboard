@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, powerSaveBlocker} from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -83,15 +83,15 @@ function initialize() {
   const shouldQuit = !app.requestSingleInstanceLock();
   if (shouldQuit) return app.quit();
 
-  loadComponent();
+  loadMainProcess();
 }
 
 /**
  * 注册主线程文件里的所有js
  *
  */
-function loadComponent() {
-  require("./electron/main/index.js");
+function loadMainProcess() {
+  require("./electron/main-process/sql/index.js");
 }
 
 initialize();
