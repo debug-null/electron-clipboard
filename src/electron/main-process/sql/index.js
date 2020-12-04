@@ -17,12 +17,12 @@ app.on("browser-window-created", () => {
   ];
   Sqlite.init({ sql, name: "superCopy" });
 
-  // globalShortcut.register("CommandOrControl+v", e => {
-  //   console.log("🚀 ~ file: background.js ~ line 82 ~ e", e);
-  //   console.log("CommandOrControl+k执行了");
-  //   getClipboardData().then(res => {
-  //     console.log("🚀 ~ file: index.js ~ line 9 ~ text ~ res", res);
-  //     Sqlite.insert();
-  //   });
-  // });
+  globalShortcut.register("CommandOrControl", e => {
+    console.log("🚀 ~ file: background.js ~ line 82 ~ e", e);
+    console.log("CommandOrControl+k执行了");
+    getClipboardData().then(res => {
+      console.log("🚀 ~ file: index.js ~ line 9 ~ text ~ res", res);
+      Sqlite.insert();
+    });
+  });
 });

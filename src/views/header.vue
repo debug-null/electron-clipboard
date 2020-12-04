@@ -14,6 +14,7 @@
 </template>
 <script>
 import All from "@/components/all.vue";
+
 export default {
   components: { All },
   data() {

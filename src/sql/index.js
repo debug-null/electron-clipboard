@@ -1,4 +1,3 @@
-const path = require("path");
 const fs = require("fs");
 const sq3 = require("sqlite3");
 
@@ -30,23 +29,16 @@ class Db {
       this.db = new sqlite3.Database(
         this.options.basePath + "/" + data.name + ".sqlite3"
       );
-      // this.db.serialize(() => {
-      //   this.db.run(sql, function() {});
-      // });
     }
-
-    // this.db.serialize(function() {
-    //   this.db.run(`CREATE TABLE "paste_con" (
-    //     "id"	INTEGER,
-    //     "type"	TEXT,
-    //     "content"	TEXT NOT NULL,
-    //     "source"	TEXT,
-    //     PRIMARY KEY("id" AUTOINCREMENT)
-    //   )`);
-    // });
   }
-  insert() {
-    this.db.run("insert into test values('hello,word')", function() {});
+
+  run(sql, params = []) {
+    return new Promise((resolve, reject) => {
+      this.db.run(sql, params, function(err) {
+        if (err) reject(err);
+        resolve({ id: this.lastID });
+      });
+    });
   }
 }
 
