@@ -1,11 +1,10 @@
-import { app, globalShortcut } from "electron";
-import { getClipboardData } from "@/utils/clipboard.js";
+const { app } = require("electron");
+const ioHook = require("iohook");
 import DataBase from "@/sql/index.js";
+import { continuousDetect } from "@/utils/index";
 
-console.log("ddddddddddddddddd");
 app.on("browser-window-created", () => {
   let Sqlite = new DataBase();
-
   let sql = [
     `CREATE TABLE "paste_con" (
         "id"	INTEGER,
@@ -17,12 +16,20 @@ app.on("browser-window-created", () => {
   ];
   Sqlite.init({ sql, name: "superCopy" });
 
-  globalShortcut.register("CommandOrControl", e => {
-    console.log("🚀 ~ file: background.js ~ line 82 ~ e", e);
-    console.log("CommandOrControl+k执行了");
-    getClipboardData().then(res => {
-      console.log("🚀 ~ file: index.js ~ line 9 ~ text ~ res", res);
-      Sqlite.insert();
-    });
+  ioHook.start();
+  //初始化闭包
+  let continuousDetectFn = continuousDetect();
+  ioHook.on("keypress", event => {
+    let rawcode = event.rawcode;
+    switch (rawcode) {
+      case 86:
+        if (event.ctrlKey) {
+          continuousDetectFn(() => {
+            console.log("连续触发ctrl+v");
+          });
+        }
+
+        break;
+    }
   });
 });
