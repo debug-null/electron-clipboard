@@ -1,32 +1,50 @@
 <template>
   <div class="text-box-container">
     <div class="clipboard-box">
-      <div class="board-item">
+      <div class="board-item" v-for="(item, index) in content" :key="index">
         <div class="content">
-          ng: LF will be replaced by CRLF in package.json. The file will have
-          its original line endings in your working directory warning: LF will
-          be replaced by CRLF in src/App.vue. The file will have its original
-          line endings in your working directory warning: LF will be repla
+          {{ item.content }}
         </div>
         <div class="tag-box">
           <div class="icon">
             <i class="el-icon-platform-eleme"></i>
           </div>
-          <div class="tag">Electron</div>
+          <div class="tag" @click="test">{{ item.tag }}</div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   name: "textBoxContainer",
-  components: {},
+  computed: {
+    ...mapState(["all"]),
+    ...mapGetters(["getOneCategory"]),
+    content() {
+      return this.getOneCategory("text");
+    }
+  },
   data() {
     return {};
   },
-  computed: {},
-  methods: {}
+  mounted() {},
+  methods: {
+    ...mapActions({
+      addAll: "addAll"
+    }),
+    test() {
+      this.addAll({
+        category: "all222",
+        type: "text",
+        content: Math.random(),
+        icon: "didi",
+        tag: "钉钉",
+        aplication: "app"
+      });
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

@@ -14,6 +14,7 @@
 </template>
 <script>
 import All from "@/components/all.vue";
+require("@/electron/render-process/index.js");
 
 export default {
   components: { All },
