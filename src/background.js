@@ -91,7 +91,7 @@ function initialize() {
  *
  */
 function loadMainProcess() {
-  require("./electron/main-process/sql/index.js");
+  require("./electron/main-process/index.js");
 }
 
 initialize();

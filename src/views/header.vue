@@ -20,7 +20,7 @@ export default {
   components: { All },
   data() {
     return {
-      activeName: "second",
+      activeName: "all",
       tabArr: [
         {
           name: "all",

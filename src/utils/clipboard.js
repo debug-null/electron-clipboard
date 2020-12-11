@@ -1,4 +1,4 @@
-const { clipboard, nativeImage } = require("electron");
+const { clipboard, nativeImage, ipcRenderer } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const { v1: uuidv1 } = require("uuid");
@@ -25,64 +25,95 @@ const clipboardImg = function() {
     if (nativeImage.isEmpty()) {
       return resolve(false);
     }
-    // 剪切板中的图片文件，图片转BASE64
-    // const imgBase64 =
-    //   "data:image/png;base64," +
-    //   Buffer.from(nativeImage.toPNG(), "binary").toString("base64");
-    //   console.log("🚀 ~ file: clipboard.js ~ line 53 ~ returnnewPromise ~ imgBase64", imgBase64)
 
     let fileBuffer = Buffer.from(nativeImage.toPNG(), "binary");
     let fileSuffix = "png";
     let fileName = uuidv1() + ".png";
+
     //图片存入临时目录
     let filePath = path
       .join(config.configDir, `/clipboard-temp/${fileName}`)
       .split(path.sep)
       .join("/");
+
+    // 转为FileList对象
+    let fileList = new File([fileBuffer], fileName, {
+      type: `image/${fileSuffix}`
+    });
+
+    // 构造一个fileList对象，方便自定义其他属性
+    let fileObj = {
+      lastModifiedDate: fileList.lastModifiedDate,
+      lastModified: fileList.lastModified,
+      name: fileList.name,
+      path: filePath,
+      size: fileList.size,
+      type: fileList.type,
+      webkitRelativePath: fileList.webkitRelativePath
+    };
+
+    //创建文件
     writeFileDir(filePath, fileBuffer, err => {
       if (err) {
         console.log("err", err);
         reject(err);
         return;
       }
-      resolve({
-        fileName,
-        filePath,
-        fileBuffer,
-        fileSuffix
-      });
+      resolve([fileObj]);
     });
   });
 };
 
-//文件夹中文件复制
-const clipboardDirectoryImg = function() {
+// 文件夹多文件复制
+const clipboardMultipleDirectoryImg = function() {
   return new Promise((resolve, reject) => {
-    //  处理文件夹中的复制
-    //Formats： https://www.codeproject.com/Reference/1091137/Windows-Clipboard-Formats
-    let filePath = clipboard
-      .readBuffer("FileNameW")
-      .toString("ucs2")
-      .replace(RegExp(String.fromCharCode(0), "g"), "");
+    //获取剪贴板中的文件列表
+    let getFiles = ipcRenderer.sendSync("clipboad-multiple-get");
 
-    if (filePath) {
+    //过滤文件
+    let files = getFiles.filter(file => fs.statSync(file).isFile());
+
+    let fileArr = [];
+
+    if (files.length) {
       try {
-        // 路径转换
-        let reslovePath = filePath
-          .split(path.sep)
-          .join("/")
-          .split("/");
-        let fileName = reslovePath[reslovePath.length - 1];
-        let fileBuffer = fs.readFileSync(filePath);
-        let fileSuffix = fileName.split(".")[1];
-        resolve({
-          fileName,
-          filePath: filePath.split(path.sep).join("/"),
-          fileBuffer,
-          fileSuffix
+        files.forEach(file => {
+          // 路径转换
+          let reslovePath = file
+            .split(path.sep)
+            .join("/")
+            .split("/");
+          let fileName = reslovePath[reslovePath.length - 1];
+          let fileBuffer = fs.readFileSync(file);
+          let fileSuffix = fileName.split(".")[1];
+
+          // / 转为FileList对象
+          let imgType = ["jpg", "jpeg", "png", "gif"];
+          //处理文件类型： 鉴于文件类型过多，目前只处理图片文件，其他都走 application
+          let fileType = imgType.includes(fileSuffix.toLocaleLowerCase())
+            ? `image/${fileSuffix}`
+            : `application/${fileSuffix}`;
+          let fileList = new File([fileBuffer], fileName, {
+            type: fileType
+          });
+
+          // 构造一个fileList对象，方便自定义其他属性
+          let fileObj = {
+            lastModifiedDate: fileList.lastModifiedDate,
+            lastModified: fileList.lastModified,
+            name: fileList.name,
+            path: file.split(path.sep).join("/"),
+            size: fileList.size,
+            type: fileList.type,
+            webkitRelativePath: fileList.webkitRelativePath
+          };
+
+          fileArr.push(fileObj);
         });
-      } catch (err) {
-        reject(err);
+
+        resolve(fileArr);
+      } catch (error) {
+        reject(error);
       }
     } else {
       resolve(false);
@@ -94,35 +125,11 @@ const clipboardDirectoryImg = function() {
  * 获取粘贴板内容
  */
 export async function getClipboardData() {
-  var files = [];
   var text = clipboard.readText();
-
   let clipboardDataRes =
-    (await clipboardDirectoryImg()) || (await clipboardImg());
-  if (clipboardDataRes.fileName) {
-    // 转为FileList对象
-    let fileList = new File(
-      [clipboardDataRes.fileBuffer],
-      clipboardDataRes.fileName,
-      {
-        type: `image/${clipboardDataRes.fileSuffix}`
-      }
-    );
-    // 构造一个fileList对象，方便自定义其他属性
-    let fileObj = {
-      lastModifiedDate: fileList.lastModifiedDate,
-      lastModified: fileList.lastModified,
-      name: fileList.name,
-      path: clipboardDataRes.filePath,
-      size: fileList.size,
-      type: fileList.type,
-      webkitRelativePath: fileList.webkitRelativePath
-    };
-    files.push(fileObj);
-  }
-
+    (await clipboardMultipleDirectoryImg()) || (await clipboardImg());
   return {
-    files,
+    files: clipboardDataRes,
     text
   };
 }

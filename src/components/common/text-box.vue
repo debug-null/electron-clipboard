@@ -5,12 +5,13 @@
         class="board-item"
         v-for="(item, index) in content"
         :key="index"
+        @click="clickHandle(item)"
         @dblclick="dbClickHandle(item)"
       >
-        <!-- <div class="edit-content" v-if="item.editVisible">
+        <div class="edit-content" v-if="item.editVisible">
           <textarea class="content-textarea" v-model="item.content"></textarea>
-        </div> -->
-        <div class="content" contenteditable="true">
+        </div>
+        <div class="content" v-else>
           {{ item.content }}
         </div>
         <div class="tag-box">
@@ -25,6 +26,7 @@
 </template>
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
+import { setClipboard } from "@/utils/clipboard";
 export default {
   name: "textBoxContainer",
   computed: {
@@ -39,11 +41,13 @@ export default {
       editVisible: false
     };
   },
-  mounted() {},
   methods: {
     ...mapActions({
       addAll: "addAll"
     }),
+    clickHandle(data) {
+      setClipboard("text", data.content);
+    },
     dbClickHandle(content) {
       console.log(
         "🚀 ~ file: text-box.vue ~ line 48 ~ dbClickHandle ~ content",
@@ -77,8 +81,16 @@ export default {
       color: #98a0af;
       text-align: left;
       .content {
-        min-height: 100px;
         max-height: 300px;
+        overflow: auto;
+      }
+      .edit-content {
+        .content-textarea {
+          border: none;
+          resize: none;
+          width: 100%;
+          height: 100%;
+        }
       }
       .tag-box {
         display: flex;

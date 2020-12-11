@@ -14,7 +14,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .home {
-  background-color: #282c34;
+  background-color: $bgColor;
   padding: 20px;
   height: 100vh;
 }
