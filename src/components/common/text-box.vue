@@ -1,15 +1,23 @@
 <template>
   <div class="text-box-container">
     <div class="clipboard-box">
-      <div class="board-item" v-for="(item, index) in content" :key="index">
-        <div class="content">
+      <div
+        class="board-item"
+        v-for="(item, index) in content"
+        :key="index"
+        @dblclick="dbClickHandle(item)"
+      >
+        <!-- <div class="edit-content" v-if="item.editVisible">
+          <textarea class="content-textarea" v-model="item.content"></textarea>
+        </div> -->
+        <div class="content" contenteditable="true">
           {{ item.content }}
         </div>
         <div class="tag-box">
           <div class="icon">
             <i class="el-icon-platform-eleme"></i>
           </div>
-          <div class="tag" @click="test">{{ item.tag }}</div>
+          <div class="tag" @click="test">{{ item.application }}</div>
         </div>
       </div>
     </div>
@@ -27,13 +35,22 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      editVisible: false
+    };
   },
   mounted() {},
   methods: {
     ...mapActions({
       addAll: "addAll"
     }),
+    dbClickHandle(content) {
+      console.log(
+        "🚀 ~ file: text-box.vue ~ line 48 ~ dbClickHandle ~ content",
+        content
+      );
+      this.$set(content, "editVisible", true);
+    },
     test() {
       this.addAll({
         category: "all222",
@@ -51,14 +68,18 @@ export default {
 .text-box-container {
   .clipboard-box {
     cursor: pointer;
-    margin-top: 10px;
     .board-item {
       padding: 10px;
+      margin-top: 10px;
       border: 1px solid #17191e;
       border-radius: 4px;
       box-shadow: 1px;
       color: #98a0af;
       text-align: left;
+      .content {
+        min-height: 100px;
+        max-height: 300px;
+      }
       .tag-box {
         display: flex;
         align-items: center;

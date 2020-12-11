@@ -11,18 +11,15 @@ export default new Vuex.Store({
         type: "text", //类型
         content: "fff", // 内容
         icon: "didi", //图标
-        tag: "钉钉", //软件名
-        aplication: "app" // 应用名
+        title: "钉钉", //标题
+        application: "app" // 应用名
       }
     ]
   },
   mutations: {
     ADDALL(state, data) {
+      console.log("🚀 ~ file: index.js ~ line 21 ~ ADDALL ~ data", data);
       state.all.push(data);
-      console.log(
-        "🚀 ~ file: index.js ~ line 24 ~ ADDALL ~ state.all",
-        state.all
-      );
     }
   },
   actions: {

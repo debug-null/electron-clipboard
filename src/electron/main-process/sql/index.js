@@ -3,6 +3,7 @@ const ioHook = require("iohook");
 import DataBase from "@/sql/index.js";
 import { getClipboardData } from "@/utils/clipboard.js";
 import { continuousDetect } from "@/utils/index";
+const activeWin = require("active-win");
 
 app.on("browser-window-created", () => {
   let Sqlite = new DataBase();
@@ -30,12 +31,20 @@ app.on("browser-window-created", () => {
             continuousDetectFn(async () => {
               console.log("Win-连续触发ctrl+v");
               let clipboardData = await getClipboardData();
+              let windowInfo = await activeWin();
+              console.log(
+                "🚀 ~ file: index.js ~ line 35 ~ continuousDetectFn ~ windowInfo",
+                windowInfo
+              );
               if (clipboardData.text) {
                 let win = BrowserWindow.getAllWindows();
-                win[0].webContents.send(
-                  "cilpboard-post-text",
-                  clipboardData.text
-                );
+                win[0].webContents.send("cilpboard-post-text", {
+                  category: "all", //类别
+                  type: "text", //类型
+                  content: clipboardData.text,
+                  title: windowInfo.title,
+                  application: windowInfo.owner.name
+                });
               }
             });
           }
