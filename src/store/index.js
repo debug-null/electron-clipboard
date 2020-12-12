@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     all: [
       {
+        id: Math.random(),
         category: 'all', // 类别
         type: 'text', // 类型
         content: 'fff', // 内容
