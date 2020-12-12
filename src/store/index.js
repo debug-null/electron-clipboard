@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import Sql from '@/sql/index.js';
 
 Vue.use(Vuex);
 
@@ -19,6 +20,12 @@ export default new Vuex.Store({
   mutations: {
     ADDALL(state, data) {
       console.log('🚀 ~ file: index.js ~ line 21 ~ ADDALL ~ data', data);
+      const Db = new Sql();
+      Db.connect('superCopy.sqlite3');
+      const sql = `INSERT INTO paste_con(type,content,source) VALUES (?,?,?)`;
+      Db.run(sql, [data.type, data.content, data.source]).then(res => {
+        console.log('🚀 ~ file: index.js ~ line 27 ~ Db.run ~ res', res);
+      });
       state.all.push(data);
     }
   },

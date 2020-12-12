@@ -7,14 +7,7 @@ class Db {
     this.db = null;
   }
   connect(path) {
-    // 检查目录是否存在，不存在创建
-    const basePath = './temp_sql'; // 数据库存放 目录
-    const isSqlDirectory = fs.existsSync(basePath);
-    if (!isSqlDirectory) {
-      fs.mkdirSync(basePath);
-    }
-
-    this.db = new sqlite3.Database(basePath + '/' + path, err => {
+    this.db = new sqlite3.Database(path, err => {
       console.log('🚀 ~ file: index.js ~ line 3 ~ err', err);
     });
   }
@@ -77,4 +70,4 @@ class Db {
   }
 }
 
-export default Db;
+module.exports = Db;

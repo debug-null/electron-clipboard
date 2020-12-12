@@ -1,22 +1,26 @@
 const { app, BrowserWindow } = require('electron');
 const ioHook = require('iohook');
-import DataBase from '@/sql/index.js';
+import Sql from '@/sql/index.js';
 import { getClipboardData } from '@/utils/clipboard.js';
 import { continuousDetect } from '@/utils/index';
 const activeWin = require('active-win');
 
-app.on('browser-window-created', () => {
-  const Sqlite = new DataBase();
-  const sql = [
-    `CREATE TABLE "paste_con" (
+function SqlInit() {
+  const Db = new Sql();
+  const sql = `CREATE TABLE IF NOT EXISTS "paste_con" (
         "id"	INTEGER,
         "type"	TEXT,
         "content"	TEXT NOT NULL,
         "source"	TEXT,
         PRIMARY KEY("id" AUTOINCREMENT)
-  )`
-  ];
-  Sqlite.init({ sql, name: 'superCopy' });
+  )`;
+  Db.connect('superCopy.sqlite3');
+  Db.run(sql);
+  Db.close();
+}
+
+app.on('browser-window-created', () => {
+  SqlInit();
 
   ioHook.start();
   // 初始化闭包
