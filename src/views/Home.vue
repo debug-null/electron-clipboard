@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import Header from "./header";
+import Header from './header';
 
 export default {
-  name: "Home",
+  name: 'Home',
   components: { Header }
 };
 </script>

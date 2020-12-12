@@ -2,38 +2,50 @@
   <div class="text-box-container">
     <div class="clipboard-box">
       <div
-        class="board-item"
         v-for="(item, index) in content"
         :key="index"
+        class="board-item"
         @click="clickHandle(item)"
         @dblclick="dbClickHandle(item)"
       >
-        <div class="edit-content" v-if="item.editVisible">
-          <textarea class="content-textarea" v-model="item.content"></textarea>
+        <div
+          v-if="item.editVisible"
+          class="edit-content"
+        >
+          <textarea
+            v-model="item.content"
+            class="content-textarea"
+          ></textarea>
         </div>
-        <div class="content" v-else>
+        <div
+          v-else
+          class="content"
+        >
           {{ item.content }}
         </div>
         <div class="tag-box">
           <div class="icon">
             <i class="el-icon-platform-eleme"></i>
           </div>
-          <div class="tag" @click="test">{{ item.application }}</div>
+          <div
+            class="tag"
+            @click="test"
+          >{{ item.application }}</div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
-import { setClipboard } from "@/utils/clipboard";
+import { mapState, mapGetters, mapActions } from 'vuex';
+import { setClipboard } from '@/utils/clipboard';
 export default {
-  name: "textBoxContainer",
+  name: 'TextBoxContainer',
   computed: {
-    ...mapState(["all"]),
-    ...mapGetters(["getOneCategory"]),
+    ...mapState(['all']),
+    ...mapGetters(['getOneCategory']),
     content() {
-      return this.getOneCategory("text");
+      return this.getOneCategory('text');
     }
   },
   data() {
@@ -43,26 +55,26 @@ export default {
   },
   methods: {
     ...mapActions({
-      addAll: "addAll"
+      addAll: 'addAll'
     }),
     clickHandle(data) {
-      setClipboard("text", data.content);
+      setClipboard('text', data.content);
     },
     dbClickHandle(content) {
       console.log(
-        "🚀 ~ file: text-box.vue ~ line 48 ~ dbClickHandle ~ content",
+        '🚀 ~ file: text-box.vue ~ line 48 ~ dbClickHandle ~ content',
         content
       );
-      this.$set(content, "editVisible", true);
+      this.$set(content, 'editVisible', true);
     },
     test() {
       this.addAll({
-        category: "all222",
-        type: "text",
+        category: 'all222',
+        type: 'text',
         content: Math.random(),
-        icon: "didi",
-        tag: "钉钉",
-        aplication: "app"
+        icon: 'didi',
+        tag: '钉钉',
+        aplication: 'app'
       });
     }
   }

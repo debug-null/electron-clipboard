@@ -1,17 +1,17 @@
-const fs = require("fs");
-const sq3 = require("sqlite3");
+const fs = require('fs');
+const sq3 = require('sqlite3');
 
 class Db {
   constructor(options = {}) {
     this.options = Object.assign(
       {
-        basePath: "./temp_sql" //数据库存放 目录
+        basePath: './temp_sql' // 数据库存放 目录
       },
       options
     );
 
-    //检查目录是否存在，不存在创建
-    let isSqlDirectory = fs.existsSync(this.options.basePath);
+    // 检查目录是否存在，不存在创建
+    const isSqlDirectory = fs.existsSync(this.options.basePath);
     if (!isSqlDirectory) {
       fs.mkdirSync(this.options.basePath);
     }
@@ -27,7 +27,7 @@ class Db {
     if (data && data.sql.length) {
       const sqlite3 = sq3.verbose();
       this.db = new sqlite3.Database(
-        this.options.basePath + "/" + data.name + ".sqlite3"
+        this.options.basePath + '/' + data.name + '.sqlite3'
       );
     }
   }

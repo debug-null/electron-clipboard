@@ -4,9 +4,9 @@
   </div>
 </template>
 <script>
-import TextBox from "@/components/common/text-box";
+import TextBox from '@/components/common/text-box';
 export default {
-  name: "",
+  name: '',
   components: { TextBox },
   data() {
     return {};

@@ -1,11 +1,14 @@
 <template>
   <div class="header-container">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs
+      v-model="activeName"
+      @tab-click="handleClick"
+    >
       <el-tab-pane
-        :label="tab.label"
-        :name="tab.name"
         v-for="tab in tabArr"
         :key="tab.name"
+        :label="tab.label"
+        :name="tab.name"
       >
         <All />
       </el-tab-pane>
@@ -13,30 +16,30 @@
   </div>
 </template>
 <script>
-import All from "@/components/all.vue";
-require("@/electron/render-process/index.js");
+import All from '@/components/all.vue';
+require('@/electron/render-process/index.js');
 
 export default {
   components: { All },
   data() {
     return {
-      activeName: "all",
+      activeName: 'all',
       tabArr: [
         {
-          name: "all",
-          label: "全部"
+          name: 'all',
+          label: '全部'
         },
         {
-          name: "pin",
-          label: "Pin"
+          name: 'pin',
+          label: 'Pin'
         },
         {
-          name: "file",
-          label: "文件"
+          name: 'file',
+          label: '文件'
         },
         {
-          name: "todo",
-          label: "Todo"
+          name: 'todo',
+          label: 'Todo'
         }
       ]
     };
