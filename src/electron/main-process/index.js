@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow} = require('electron');
 const ioHook = require('iohook');
 import Sql from '@/sql/index.js';
 import { getClipboardData } from '@/utils/clipboard.js';
@@ -26,7 +26,6 @@ app.on('browser-window-created', () => {
   // 初始化闭包
   const continuousDetectFn = continuousDetect();
   ioHook.on('keypress', event => {
-    console.log('🚀 ~ file: index.js ~ line 25 ~ ioHook.on ~ event', event);
     const rawcode = event.rawcode;
     const platform = process.platform;
     if (platform === 'win32') {

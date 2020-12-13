@@ -1,12 +1,13 @@
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
-
+var instance = null;
 class Db {
   constructor() {
-    this.instance = null;
     this.db = null;
   }
   connect(path) {
+    if (instance) instance;
+
     // 检查目录是否存在，不存在创建
     const basePath = './temp_sql'; // 数据库存放 目录
     const isSqlDirectory = fs.existsSync(basePath);
@@ -15,7 +16,9 @@ class Db {
     }
 
     this.db = new sqlite3.Database(basePath + '/' + path, err => {
-      console.log('🚀 ~ file: index.js ~ line 3 ~ err', err);
+      if (err) {
+        alert(err);
+      }
     });
   }
   run(sql, params) {

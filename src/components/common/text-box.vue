@@ -1,31 +1,28 @@
 <template>
   <div class="text-box-container">
     <div class="clipboard-box">
-      <div v-for="(item, index) in content" :key="index" class="board-item" @click="clickHandle(item)" @dblclick="dbClickHandle(item)">
-        <div v-if="item.editVisible" class="edit-content">
-          <textarea v-model="item.content" class="content-textarea"></textarea>
-        </div>
-        <div v-else class="content">
-          {{ item.content }}
-        </div>
+      <Editor v-for="(item, index) in content" :key="index" :content="item.content" @input="inputHandle">
         <div class="tag-box">
           <div class="icon">
             <i class="el-icon-platform-eleme"></i>
           </div>
           <div class="tag" @click="test">{{ item.application }}</div>
         </div>
-      </div>
+      </Editor>
     </div>
   </div>
 </template>
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import Editor from '@/components/common/editor';
 import { setClipboard } from '@/utils/clipboard';
 export default {
   name: 'TextBoxContainer',
+  components: { Editor },
   data() {
     return {
-      editVisible: false
+      editVisible: false,
+      areaHeight: 80 // textarea 输入框的高度
     };
   },
   computed: {
@@ -35,24 +32,24 @@ export default {
       return this.getOneCategory('text');
     }
   },
+  mounted() {},
 
   methods: {
     ...mapActions({
       addAll: 'addAll'
     }),
+    textAreaKeyUp(e) {
+      console.log('🚀 ~ file: text-box.vue ~ line 48 ~ textAreaChange ~ e', e);
+      console.log(e.target.scrollHeight);
+      this.areaHeight = e.target.scrollHeight;
+    },
     clickHandle(data) {
       console.log('🚀 ~ file: text-box.vue ~ line 44 ~ clickHandle ~ data', data);
       setClipboard('text', 'ddd');
     },
-    dbClickHandle(data) {
-      console.log('🚀 ~ file: text-box.vue ~ line 48 ~ dbClickHandle ~ data', data);
-      this.$set(data, 'editVisible', true);
-      this.content.forEach(item => {
-        this.$set(item, 'editVisible', false);
-        if (item.id === data.id) {
-          this.$set(item, 'editVisible', true);
-        }
-      });
+
+    inputHandle(data) {
+      console.log('🚀 ~ file: text-box.vue ~ line 84 ~ inputHandle ~ data', data);
     },
     test() {
       this.addAll({
@@ -71,40 +68,15 @@ export default {
 <style lang="scss" scoped>
 .text-box-container {
   .clipboard-box {
-    cursor: pointer;
-    .board-item {
-      padding: 10px;
+    .tag-box {
+      display: flex;
+      align-items: center;
       margin-top: 10px;
-      border: 1px solid #17191e;
-      border-radius: 4px;
-      box-shadow: 1px;
-      color: #98a0af;
-      text-align: left;
-      .content {
-        max-height: 300px;
-        overflow: auto;
+      .icon {
+        margin-right: 4px;
       }
-      .edit-content {
-        .content-textarea {
-          border: none;
-          resize: none;
-          width: 100%;
-          height: 100%;
-        }
-      }
-      .tag-box {
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
-        .icon {
-          margin-right: 4px;
-        }
-        .tag {
-          font-size: 14px;
-        }
-      }
-      &:hover {
-        border-color: #fff;
+      .tag {
+        font-size: 14px;
       }
     }
   }

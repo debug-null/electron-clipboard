@@ -1,5 +1,5 @@
 <template>
-  <div class="222">
+  <div class="all-container">
     <TextBox />
   </div>
 </template>

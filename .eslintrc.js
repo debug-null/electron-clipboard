@@ -27,6 +27,16 @@ module.exports = {
         allowUsingIterationVar: true
       }
     ],
+    'vue/max-attributes-per-line': [
+      2,
+      {
+        singleline: 10,
+        multiline: {
+          max: 1,
+          allowFirstLine: false
+        }
+      }
+    ],
     'vue/html-self-closing': [
       'error',
       {
