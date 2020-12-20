@@ -8,7 +8,8 @@ class Db {
   }
   connect(path) {
     this.db = new sqlite3.Database(path, err => {
-      console.log('🚀 ~ file: index.js ~ line 3 ~ err', err);
+      if (!err) return;
+      console.log('🚀 数据库连接失败', err);
     });
   }
   run(sql, params) {

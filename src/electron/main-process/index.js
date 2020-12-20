@@ -1,12 +1,13 @@
-const { app, BrowserWindow} = require('electron');
-const ioHook = require('iohook');
+
 import Sql from '@/sql/index.js';
 import { getClipboardData } from '@/utils/clipboard.js';
-import { continuousDetect } from '@/utils/index';
+const { app, BrowserWindow } = require('electron');
+const ioHook = require('iohook');
+const Db = new Sql();
+
 const activeWin = require('active-win');
 
 function SqlInit() {
-  const Db = new Sql();
   const sql = `CREATE TABLE IF NOT EXISTS "paste_con" (
         "id"	INTEGER,
         "type"	TEXT,
@@ -19,24 +20,25 @@ function SqlInit() {
   Db.close();
 }
 
-app.on('browser-window-created', () => {
+app.on('ready', () => {
   SqlInit();
+});
 
+app.on('browser-window-created', () => {
   ioHook.start();
-  // 初始化闭包
-  const continuousDetectFn = continuousDetect();
+
   ioHook.on('keypress', event => {
     const rawcode = event.rawcode;
     const platform = process.platform;
     if (platform === 'win32') {
       switch (rawcode) {
-        case 86:
+        case 67:
           if (event.ctrlKey) {
-            continuousDetectFn(async () => {
-              console.log('Win-连续触发ctrl+v');
+            (async () => {
+              console.log('Win-连续触发ctrl+c');
               const clipboardData = await getClipboardData();
               const windowInfo = await activeWin();
-              console.log('🚀 ~ file: index.js ~ line 35 ~ continuousDetectFn ~ windowInfo', windowInfo);
+
               if (clipboardData.text) {
                 const win = BrowserWindow.getAllWindows();
                 win[0].webContents.send('cilpboard-post-text', {
@@ -47,7 +49,7 @@ app.on('browser-window-created', () => {
                   application: windowInfo.owner.name
                 });
               }
-            });
+            })();
           }
 
           break;

@@ -3,6 +3,12 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 
+import Sql from '@/sql/index.js';
+
+const Db = new Sql();
+Db.connect('superCopy.sqlite3');
+Vue.prototype.$db = Db;
+
 Vue.config.productionTip = false;
 
 import ElementUI from 'element-ui';

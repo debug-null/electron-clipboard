@@ -13,6 +13,8 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@better-scroll/core": "^2.0.6",
+    "@better-scroll/mouse-wheel": "^2.0.6",
     "active-win": "^6.2.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.14.1",

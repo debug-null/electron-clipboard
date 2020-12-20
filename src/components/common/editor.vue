@@ -1,9 +1,12 @@
 <template>
   <div class="edit-content-container" @dblclick="dbClickHandle">
-    <div ref="rich" class="editor-box" :contenteditable="contenteditable" spellcheck="false" v-on="listener" @blur="blurHandle">
-      {{ content }}
-    </div>
     <slot></slot>
+    <div class="title-box" @click="clickTitle">
+      {{ clipboardData.application }}
+    </div>
+    <div ref="rich" class="editor-box" :contenteditable="contenteditable" spellcheck="false" v-on="listener" @blur="blurHandle">
+      {{ clipboardData.content }}
+    </div>
   </div>
 </template>
 <script>
@@ -18,10 +21,10 @@ export default {
         return ['plain', 'html'].includes(value);
       }
     },
-    // 默认内容
-    content: {
-      type: String,
-      default: ''
+    clipboardData: {
+      type: Object,
+      default: () => {},
+      require: true
     }
   },
   data() {
@@ -39,6 +42,9 @@ export default {
       });
     }
   },
+  mounted() {
+    console.log(this.clipboardData);
+  },
   methods: {
     dbClickHandle() {
       this.contenteditable = true;
@@ -50,30 +56,47 @@ export default {
     },
     blurHandle(e) {
       this.contenteditable = false;
+    },
+    clickTitle() {
+      this.$emit('clickTitle');
     }
   }
 };
 </script>
 <style lang="scss" scoped>
 .edit-content-container {
+  .title-box {
+    text-align: left;
+    margin-bottom: 8px;
+    font-size: 20px;
+    background-image: url('~@/assets/logo.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: right;
+    background-color: #ff5955;
+    padding: 8px 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
   cursor: pointer;
-  border: 1px solid #6e7681;
-  padding: 10px;
-  background-color: #30363d;
+  background-color: #282c34;
   border-radius: 4px;
   color: #fff;
   font-size: 14px;
   margin-top: 10px;
+  margin-right: 10px;
   &:hover {
     border-color: #fff;
     box-shadow: 0 1px 3px rgba(#fff, 0.3);
   }
   .editor-box {
     min-height: 30px;
+    max-height: 70%;
     text-align: left;
-    border-bottom: 1px dotted #fff;
+    overflow: auto;
     cursor: text;
     outline: none;
+    padding: 8px;
   }
 }
 </style>
