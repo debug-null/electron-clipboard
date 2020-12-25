@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-content-container" @dblclick="dbClickHandle">
+  <div class="edit-content-container" @dblclick="dbClickHandle" @click="setPaste(clipboardData.content)">
     <slot></slot>
     <div class="title-box" @click="clickTitle">
       {{ clipboardData.application }}
@@ -10,6 +10,8 @@
   </div>
 </template>
 <script>
+import { setClipboard } from '@/utils/clipboard.js';
+
 export default {
   name: 'SimpleEditor',
   props: {
@@ -42,10 +44,16 @@ export default {
       });
     }
   },
-  mounted() {
-    console.log(this.clipboardData);
-  },
   methods: {
+    // 复制到粘贴板
+    setPaste(content) {
+      setClipboard('text', content);
+      this.$notify({
+        title: '成功',
+        message: '复制成功',
+        type: 'success'
+      });
+    },
     dbClickHandle() {
       this.contenteditable = true;
 

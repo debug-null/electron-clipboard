@@ -45,7 +45,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$db);
     this.$db.all('select * from paste_con limit 10').then(res => {
       console.log('🚀 ~ file: section.vue ~ line 50 ~ this.$db.all ~ res', res);
       this.initAll(res);

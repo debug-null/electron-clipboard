@@ -13,6 +13,7 @@ function SqlInit() {
         "type"	TEXT,
         "content"	TEXT NOT NULL,
         "source"	TEXT,
+        "application" TEXT,
         PRIMARY KEY("id" AUTOINCREMENT)
   )`;
   Db.connect('superCopy.sqlite3');

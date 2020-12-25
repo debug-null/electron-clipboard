@@ -27,10 +27,7 @@ export default new Vuex.Store({
       // console.log('🚀 ~ file: index.js ~ line 24 ~ ADDALL ~ data', data);
       // console.log('🚀 ~ file: index.js ~ line 24 ~ ADDALL ~ Db', Db);
       // Db.connect('superCopy.sqlite3');
-      // const sql = `INSERT INTO paste_con(type,content,source) VALUES (?,?,?)`;
-      // Db.run(sql, [data.type, data.content, data.source]).then(res => {
-      //   console.log('🚀 ~ file: index.js ~ line 27 ~ Db.run ~ res', res);
-      // });
+
       state.all.push(data);
     }
   },

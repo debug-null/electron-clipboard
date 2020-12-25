@@ -6,6 +6,7 @@ class Db {
     this.db = null;
   }
   connect(path) {
+    console.log('🚀 ~ file: index.js ~ line 15 ~ Db ~ connect ~ instance', instance);
     if (instance) instance;
 
     // 检查目录是否存在，不存在创建
@@ -20,6 +21,8 @@ class Db {
         alert(err);
       }
     });
+
+    this.instance = this.db;
   }
   run(sql, params) {
     return new Promise((resolve, reject) => {
