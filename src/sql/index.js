@@ -6,8 +6,8 @@ class Db {
     this.db = null;
   }
   connect(path) {
-    console.log('🚀 ~ file: index.js ~ line 15 ~ Db ~ connect ~ instance', instance);
-    if (instance) instance;
+    // console.log('🚀 ~ file: index.js ~ line 15 ~ Db ~ connect ~ instance', instance);
+    // if (instance) instance;
 
     // 检查目录是否存在，不存在创建
     const basePath = './temp_sql'; // 数据库存放 目录
@@ -22,7 +22,7 @@ class Db {
       }
     });
 
-    this.instance = this.db;
+    // this.instance = this.db;
   }
   run(sql, params) {
     return new Promise((resolve, reject) => {

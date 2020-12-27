@@ -114,7 +114,7 @@ export default {
       &.active {
         background-color: #46464e;
       }
-      &:hover{
+      &:hover {
         background-color: #46464e;
       }
     }

@@ -1,4 +1,3 @@
-
 import Sql from '@/sql/index.js';
 import { getClipboardData } from '@/utils/clipboard.js';
 const { app, BrowserWindow } = require('electron');
@@ -10,9 +9,10 @@ const activeWin = require('active-win');
 function SqlInit() {
   const sql = `CREATE TABLE IF NOT EXISTS "paste_con" (
         "id"	INTEGER,
-        "type"	TEXT,
+        "category"	TEXT,
         "content"	TEXT NOT NULL,
-        "source"	TEXT,
+        "title" TEXT,
+        "type"	TEXT,
         "application" TEXT,
         PRIMARY KEY("id" AUTOINCREMENT)
   )`;
@@ -20,6 +20,23 @@ function SqlInit() {
   Db.run(sql);
   Db.close();
 }
+
+var setPaste = async platform => {
+  console.log(`${platform}-触发ctrl+c`);
+  const clipboardData = await getClipboardData();
+  const windowInfo = await activeWin();
+
+  if (clipboardData.text) {
+    const win = BrowserWindow.getAllWindows();
+    win[0].webContents.send('cilpboard-post-text', {
+      category: 'all', // 类别
+      type: 'text', // 类型
+      content: clipboardData.text,
+      title: windowInfo.title,
+      application: windowInfo.owner.name
+    });
+  }
+};
 
 app.on('ready', () => {
   SqlInit();
@@ -35,22 +52,7 @@ app.on('browser-window-created', () => {
       switch (rawcode) {
         case 67:
           if (event.ctrlKey) {
-            (async () => {
-              console.log('Win-连续触发ctrl+c');
-              const clipboardData = await getClipboardData();
-              const windowInfo = await activeWin();
-
-              if (clipboardData.text) {
-                const win = BrowserWindow.getAllWindows();
-                win[0].webContents.send('cilpboard-post-text', {
-                  category: 'all', // 类别
-                  type: 'text', // 类型
-                  content: clipboardData.text,
-                  title: windowInfo.title,
-                  application: windowInfo.owner.name
-                });
-              }
-            })();
+            setPaste('Windows');
           }
 
           break;
@@ -59,15 +61,10 @@ app.on('browser-window-created', () => {
 
     if (platform === 'darwin') {
       switch (rawcode) {
-        case 9:
+        case 8:
           if (event.metaKey) {
-            continuousDetectFn(async () => {
-              console.log('MAC-连续触发ctrl+v');
-              const text = await getClipboardData();
-              console.log('🚀 ~ file: index.js ~ line 49 ~ continuousDetectFn ~ text', text);
-            });
+            setPaste('Mac');
           }
-
           break;
       }
     }

@@ -4,17 +4,18 @@ import { app, protocol, BrowserWindow, Menu, screen } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
+console.log('🚀 ~ file: background.js ~ line 7 ~ isDevelopment', isDevelopment);
 
 // Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
-]);
+protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
 async function createWindow() {
+  const screenObj = screen.getPrimaryDisplay().workAreaSize;
   const winObj = {
-    width: screen.getPrimaryDisplay().workAreaSize.width,
-    height: 800,
+    width: screenObj.width,
+    height: 350,
     fullscreen: false,
+    y: screenObj.height, // 置底
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -24,17 +25,19 @@ async function createWindow() {
 
   // 开发环境
   if (isDevelopment) {
-    Object.assign({
-      height: 250,
+    Object.assign(winObj, {
+      height: 350,
       darkTheme: true,
       frame: true,
       x: 0,
-      y: -10
-    }, winObj);
+      y: 0
+    });
   } else {
     // 隐藏菜单
     Menu.setApplicationMenu(null);
   }
+  console.log('🚀 ~ file: background.js ~ line 40 ~ createWindow ~ winObj', winObj);
+
   // Create the browser window.
   const win = new BrowserWindow(winObj);
 

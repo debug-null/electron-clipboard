@@ -6,11 +6,8 @@ Db.connect('superCopy.sqlite3');
 
 ipcRenderer.on('cilpboard-post-text', (event, data) => {
   console.log('🚀 ~ file: index.js ~ line 4 ~ ipcRenderer.on ~ data', data);
-
-  console.log('Db---', Db);
-  const sql = `INSERT INTO paste_con(type,content,source,application) VALUES (?,?,?,?)`;
-
-  Db.run(sql, [data.type, data.content, data.source, data.application]).then(res => {
+  const sql = `INSERT INTO paste_con(category,content,title,type,application) VALUES (?,?,?,?,?)`;
+  Db.run(sql, [data.category, data.content, data.title, data.type, data.application]).then(res => {
     console.log('🚀 ~ file: index.js ~ line 27 ~ Db.run ~ res', res);
     store.dispatch('addAll', data);
 
