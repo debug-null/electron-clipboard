@@ -4,7 +4,6 @@ import { app, protocol, BrowserWindow, Menu, screen } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
-console.log('🚀 ~ file: background.js ~ line 7 ~ isDevelopment', isDevelopment);
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
@@ -26,7 +25,7 @@ async function createWindow() {
   // 开发环境
   if (isDevelopment) {
     Object.assign(winObj, {
-      height: 350,
+      height: 850,
       darkTheme: true,
       frame: true,
       x: 0,
@@ -36,7 +35,6 @@ async function createWindow() {
     // 隐藏菜单
     Menu.setApplicationMenu(null);
   }
-  console.log('🚀 ~ file: background.js ~ line 40 ~ createWindow ~ winObj', winObj);
 
   // Create the browser window.
   const win = new BrowserWindow(winObj);

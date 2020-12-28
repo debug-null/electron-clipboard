@@ -21,21 +21,24 @@ function SqlInit() {
   Db.close();
 }
 
-var setPaste = async platform => {
+var setPaste = platform => {
   console.log(`${platform}-触发ctrl+c`);
-  const clipboardData = await getClipboardData();
-  const windowInfo = await activeWin();
+  // 300 毫秒延迟，不然获取的会是旧的值
+  setTimeout(async () => {
+    const clipboardData = await getClipboardData();
+    const windowInfo = await activeWin();
 
-  if (clipboardData.text) {
-    const win = BrowserWindow.getAllWindows();
-    win[0].webContents.send('cilpboard-post-text', {
-      category: 'all', // 类别
-      type: 'text', // 类型
-      content: clipboardData.text,
-      title: windowInfo.title,
-      application: windowInfo.owner.name
-    });
-  }
+    if (clipboardData.text) {
+      const win = BrowserWindow.getAllWindows();
+      win[0].webContents.send('cilpboard-post-text', {
+        category: 'all', // 类别
+        type: 'text', // 类型
+        content: clipboardData.text,
+        title: windowInfo.title,
+        application: windowInfo.owner.name
+      });
+    }
+  }, 300);
 };
 
 app.on('ready', () => {
@@ -53,6 +56,14 @@ app.on('browser-window-created', () => {
         case 67:
           if (event.ctrlKey) {
             setPaste('Windows');
+          }
+
+          break;
+        case 73:
+          if (event.ctrlKey) {
+            // ctrl+i 打开控制台
+            const win = BrowserWindow.getAllWindows();
+            win[0].webContents.openDevTools();
           }
 
           break;

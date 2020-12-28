@@ -124,6 +124,7 @@ const clipboardMultipleDirectoryImg = function() {
  */
 export async function getClipboardData() {
   var text = clipboard.readText();
+  console.log('🚀 ~ file: clipboard.js ~ line 127 ~ getClipboardData ~ text', text);
   // let clipboardDataRes =
   // (await clipboardMultipleDirectoryImg()) || (await clipboardImg());
   const clipboardDataRes = await clipboardImg();

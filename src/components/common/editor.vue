@@ -101,10 +101,12 @@ export default {
     min-height: 30px;
     max-height: 70%;
     text-align: left;
-    overflow: auto;
+    overflow-x: auto;
     cursor: text;
     outline: none;
     padding: 8px;
+    white-space: break-spaces;
+    word-break: break-word;
   }
 }
 </style>

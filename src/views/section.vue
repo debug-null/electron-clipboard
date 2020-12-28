@@ -1,8 +1,11 @@
 <template>
   <div class="horizontal-container">
     <div class="type-box">
-      <div class="type-item">
-        <i class="el-icon-search"></i>
+      <div class="type-item search-box-content">
+        <div class="search-box">
+          <i class="el-icon-search" @click="searchVisible = true"></i>
+          <input v-model="searchVal" type="text" @keyup="search" />
+        </div>
       </div>
       <div class="type-item active">
         剪贴板历史
@@ -34,6 +37,9 @@ export default {
   components: {Editor},
   data () {
     return {
+      searchVal: '',
+      searchVisible: false,
+      searchResult: null,
       bs: null
     };
   },
@@ -41,11 +47,11 @@ export default {
     ...mapState(['all']),
     ...mapGetters(['getOneCategory']),
     content() {
-      return this.getOneCategory('text');
+      return this.searchResult || this.getOneCategory('text');
     }
   },
   mounted() {
-    this.$db.all('select * from paste_con limit 10').then(res => {
+    this.$db.all('select * from paste_con order by id desc limit 10').then(res => {
       console.log('🚀 ~ file: section.vue ~ line 50 ~ this.$db.all ~ res', res);
       this.initAll(res);
     });
@@ -81,6 +87,11 @@ export default {
     inputHandle(data) {
       console.log('🚀 ~ file: text-box.vue ~ line 84 ~ inputHandle ~ data', data);
     },
+    search(e) {
+      this.$db.all(`select * from paste_con where content like '%${this.searchVal}%'`).then(res => {
+        this.searchResult = res;
+      });
+    },
     clickTitle() {
       this.addAll({
         id: Math.random(),
@@ -104,11 +115,10 @@ export default {
     justify-content: center;
     align-items: center;
     color: #fff;
-    padding: 10px;
+    height: 62px;
     .type-item {
       cursor: pointer;
       font-size: 14px;
-      padding: 8px 10px;
       margin-right: 8px;
       border-radius: 4px;
       &.active {
@@ -133,6 +143,43 @@ export default {
         display: inline-block;
         text-align: center;
         vertical-align: top;
+      }
+    }
+  }
+
+  .search-box-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      background-color: initial !important;
+    }
+    .search-box {
+      border-radius: 10px;
+      background-color: #2f495e;
+      padding: 4px 6px;
+      display: flex;
+      justify-items: center;
+      align-items: center;
+
+      input {
+        width: 0;
+        border: none;
+        padding: 0;
+        color: #fff;
+        background-color: transparent;
+        transition: all 0.5s ease;
+        &:focus {
+          outline: none;
+        }
+      }
+      &:hover {
+        input {
+          width: 180px;
+        }
+        i {
+          margin-right: 8px;
+        }
       }
     }
   }

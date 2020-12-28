@@ -24,11 +24,8 @@ export default new Vuex.Store({
       state.all = data;
     },
     ADDALL(state, data) {
-      // console.log('🚀 ~ file: index.js ~ line 24 ~ ADDALL ~ data', data);
-      // console.log('🚀 ~ file: index.js ~ line 24 ~ ADDALL ~ Db', Db);
-      // Db.connect('superCopy.sqlite3');
-
-      state.all.push(data);
+      console.log('🚀 ~ file: index.js ~ line 27 ~ ADDALL ~ data', data);
+      state.all.unshift(data);
     }
   },
   actions: {
