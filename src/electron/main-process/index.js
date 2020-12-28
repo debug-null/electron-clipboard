@@ -49,6 +49,7 @@ app.on('browser-window-created', () => {
   ioHook.start();
 
   ioHook.on('keypress', event => {
+    console.log('🚀 ~ file: index.js ~ line 52 ~ app.on ~ event', event);
     const rawcode = event.rawcode;
     const platform = process.platform;
     if (platform === 'win32') {
@@ -57,7 +58,13 @@ app.on('browser-window-created', () => {
           if (event.ctrlKey) {
             setPaste('Windows');
           }
-
+          break;
+        case 88:
+          // alt+x
+          if (event.altKey) {
+            const win = BrowserWindow.getAllWindows();
+            win[0].show();
+          }
           break;
         case 73:
           if (event.ctrlKey) {
