@@ -1,6 +1,8 @@
 import Sql from '@/sql/index.js';
 import { getClipboardData } from '@/utils/clipboard.js';
+import { continuousDetect } from '@/utils/index';
 const { app, BrowserWindow } = require('electron');
+
 const ioHook = require('iohook');
 const Db = new Sql();
 
@@ -48,8 +50,8 @@ app.on('ready', () => {
 app.on('browser-window-created', () => {
   ioHook.start();
 
+  var continuousDetectFn = continuousDetect();
   ioHook.on('keypress', event => {
-    console.log('🚀 ~ file: index.js ~ line 52 ~ app.on ~ event', event);
     const rawcode = event.rawcode;
     const platform = process.platform;
     if (platform === 'win32') {
@@ -57,14 +59,14 @@ app.on('browser-window-created', () => {
         case 67:
           if (event.ctrlKey) {
             setPaste('Windows');
+
+            // 连续触发2次以上ctrl+c， 显示窗口
+            continuousDetectFn(() => {
+              const win = BrowserWindow.getAllWindows();
+              win[0].show();
+            });
           }
-          break;
-        case 88:
-          // alt+x
-          if (event.altKey) {
-            const win = BrowserWindow.getAllWindows();
-            win[0].show();
-          }
+
           break;
         case 73:
           if (event.ctrlKey) {

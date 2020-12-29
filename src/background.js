@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, Menu, screen, globalShortcut } from 'electron';
+import { app, protocol, BrowserWindow, Menu, screen } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -13,27 +13,22 @@ async function createWindow() {
   const screenObj = screen.getPrimaryDisplay().workAreaSize;
   const winObj = {
     width: screenObj.width,
-    height: 350,
     fullscreen: false,
-    y: screenObj.height, // 置底
+    x: 0,
+    y: screenObj.height - 390, // 置底
     webPreferences: {
-      // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
     }
   };
-
   // 开发环境
   if (isDevelopment) {
     Object.assign(winObj, {
       height: 850,
-      darkTheme: true,
       frame: true,
-      x: 0,
       y: 0
     });
   } else {
-    // 隐藏菜单
     Menu.setApplicationMenu(null);
   }
 
@@ -41,6 +36,12 @@ async function createWindow() {
   const win = new BrowserWindow(winObj);
   win.setSkipTaskbar(true); // 隐藏任务栏
 
+  win.setAlwaysOnTop(true);
+
+  // 失焦： 隐藏窗口
+  win.on('blur', () => {
+    win.hide();
+  });
   setTray(win);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

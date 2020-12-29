@@ -19,5 +19,9 @@ export const setTray = (win) => {
   ]);
   tray.setToolTip('Super paste');
   tray.setContextMenu(contextMenu);
+
+  tray.on('click', () => {
+    win.show();
+  });
 };
 

@@ -2,7 +2,7 @@
   <div class="horizontal-container">
     <div class="type-box">
       <div class="type-item search-box-content">
-        <div class="search-box">
+        <div class="search-box" :style="searchStyle" @mouseenter="mouseenterHandle">
           <i class="el-icon-search" @click="searchVisible = true"></i>
           <input v-model="searchVal" type="text" @keyup="search" />
         </div>
@@ -31,6 +31,7 @@ BScroll.use(MouseWheel);
 
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Editor from '@/components/common/editor';
+import {debounce} from '@/utils/index';
 
 export default {
   name: 'Section',
@@ -40,6 +41,7 @@ export default {
       searchVal: '',
       searchVisible: false,
       searchResult: null,
+      searchStyle: {},
       bs: null
     };
   },
@@ -87,11 +89,14 @@ export default {
     inputHandle(data) {
       console.log('🚀 ~ file: text-box.vue ~ line 84 ~ inputHandle ~ data', data);
     },
-    search(e) {
+    mouseenterHandle() {
+      this.searchStyle = {};
+    },
+    search: debounce(function() {
       this.$db.all(`select * from paste_con where content like '%${this.searchVal}%'`).then(res => {
         this.searchResult = res;
       });
-    },
+    }, 100),
     clickTitle() {
       this.addAll({
         id: Math.random(),

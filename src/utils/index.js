@@ -19,3 +19,24 @@ export function continuousDetect() {
     }, waitTime);
   };
 }
+// 节流： 一段时间内，只执行一次
+export function throttle (fn, wait) {
+  return function() {
+    const args = arguments;
+    if (fn.id) return;
+    fn.id = setTimeout(() => {
+      fn.apply(this, args);
+      fn.id = null;
+    }, wait);
+  };
+}
+// 防抖：一定时间内，触发多次，执行一次
+export function debounce(fn, delay) {
+  return function() {
+    const args = arguments;
+    clearTimeout(fn.id);
+    fn.id = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
