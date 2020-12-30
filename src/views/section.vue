@@ -2,7 +2,7 @@
   <div class="horizontal-container">
     <div class="type-box">
       <div class="type-item search-box-content">
-        <div class="search-box" :style="searchStyle" @mouseenter="mouseenterHandle">
+        <div :class="{ 'search-box': true, 'search-box-animation': searchAnimation }" @mouseenter="mouseenterHandle" @mouseleave="mouseleaveHandle">
           <i class="el-icon-search" @click="searchVisible = true"></i>
           <input v-model="searchVal" type="text" @keyup="search" />
         </div>
@@ -41,7 +41,7 @@ export default {
       searchVal: '',
       searchVisible: false,
       searchResult: null,
-      searchStyle: {},
+      searchAnimation: false,
       bs: null
     };
   },
@@ -90,7 +90,14 @@ export default {
       console.log('🚀 ~ file: text-box.vue ~ line 84 ~ inputHandle ~ data', data);
     },
     mouseenterHandle() {
-      this.searchStyle = {};
+      this.searchAnimation = true;
+    },
+    mouseleaveHandle() {
+      if (this.searchVal) {
+        this.searchAnimation = true;
+      } else {
+        this.searchAnimation = false;
+      }
     },
     search: debounce(function() {
       this.$db.all(`select * from paste_con where content like '%${this.searchVal}%'`).then(res => {
@@ -178,13 +185,13 @@ export default {
           outline: none;
         }
       }
-      &:hover {
-        input {
-          width: 180px;
-        }
-        i {
-          margin-right: 8px;
-        }
+    }
+    .search-box-animation {
+      input {
+        width: 180px;
+      }
+      i {
+        margin-right: 8px;
       }
     }
   }
